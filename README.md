@@ -2,6 +2,8 @@
 
 An AI-powered Chrome extension that helps you learn GeoGuessr by analyzing screenshots and teaching you location identification techniques.
 
+<img width="1914" height="965" alt="image" src="https://github.com/user-attachments/assets/b7f92cbd-b1dd-4d68-b65b-b5b57027230a" />
+
 ## What it does
 
 - **Analyzes your current GeoGuessr view** using Google's Gemini AI
