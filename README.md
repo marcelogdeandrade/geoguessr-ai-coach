@@ -4,6 +4,24 @@ An AI-powered Chrome extension that helps you learn GeoGuessr by analyzing scree
 
 <img width="1914" height="965" alt="image" src="https://github.com/user-attachments/assets/b7f92cbd-b1dd-4d68-b65b-b5b57027230a" />
 
+---
+
+## DISCLAIMER
+
+**THIS TOOL IS FOR EDUCATIONAL USE ONLY.**
+
+This extension is designed to help you learn location identification patterns in single-player practice sessions. Using it to gain an unfair advantage in competitive play violates the [GeoGuessr Terms of Service](https://www.geoguessr.com/terms) and may result in your account being banned.
+
+Per GeoGuessr's Community Rules, the following is considered cheating:
+- Using third-party software to gain an unfair advantage over other players
+- Using external sources of information as assistance during competitive play
+
+**The author of this tool accepts no responsibility for any consequences resulting from its misuse.**
+
+**Recommended usage:** Review locations AFTER making your guess to understand what clues you missed, or use on practice maps to learn identification patterns.
+
+---
+
 ## What it does
 
 - **Analyzes your current GeoGuessr view** using Google's Gemini AI
@@ -12,14 +30,6 @@ An AI-powered Chrome extension that helps you learn GeoGuessr by analyzing scree
 - **Suggests alternatives** when the location is ambiguous
 - **Teaches you patterns** with memorable tips for future games
 - **Answers follow-up questions** so you can learn more about what you're seeing
-
-## Screenshots
-
-The extension opens as a side panel in Chrome, so you can analyze while you play:
-
-1. Click "Review Map" to capture and analyze the current view
-2. See the predicted country with key clues
-3. Ask follow-up questions to learn more
 
 ## Installation
 
@@ -59,7 +69,7 @@ bun run build
 
 ## Usage
 
-1. Go to [GeoGuessr](https://www.geoguessr.com) and start a game
+1. Go to [GeoGuessr](https://www.geoguessr.com) and start a practice game
 2. Click the extension icon to open the side panel
 3. Click **Review Map** to analyze the current view
 4. Read the analysis and learn from the clues
@@ -72,7 +82,7 @@ bun run build
 
 - **Hide Answer**: Click the eye icon to blur the result until you're ready
 - **Model Selection**: Choose between Gemini models in Settings
-- **Multiplayer Safe**: Automatically disables on competitive multiplayer games
+- **Multiplayer Disabled**: Automatically disables on multiplayer games
 
 ## Development
 
