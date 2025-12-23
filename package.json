@@ -1,0 +1,14 @@
+{
+  "name": "geoguessr-ai-coach-extension",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "bun build src/sidepanel.ts --outdir=dist --target=browser --minify",
+    "watch": "bun build src/sidepanel.ts --outdir=dist --target=browser --watch"
+  },
+  "dependencies": {
+    "ai": "^4.0.0",
+    "@ai-sdk/google": "^1.0.0",
+    "zod": "^3.23.0"
+  }
+}

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #1a1a2e;
+      color: #e0e0e0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+    }
+
+    .header {
+      padding: 12px 16px;
+      background: #252541;
+      border-bottom: 1px solid #2d2d44;
+      position: sticky;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-left .title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .settings-btn {
+      background: none;
+      border: none;
+      color: #888;
+      cursor: pointer;
+      padding: 4px;
+      font-size: 16px;
+    }
+
+    .settings-btn:hover {
+      color: #fff;
+    }
+
+    .content {
+      padding: 16px;
+    }
+
+    /* Controls row */
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .hide-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      background: #252541;
+      border: 1px solid #3d3d5c;
+      border-radius: 6px;
+      color: #888;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .hide-toggle:hover {
+      border-color: #6366f1;
+      color: #e0e0e0;
+    }
+
+    .hide-toggle.active {
+      background: #6366f1;
+      border-color: #6366f1;
+      color: #fff;
+    }
+
+    .hide-toggle .icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    .hide-toggle.active .eye-open {
+      display: none;
+    }
+
+    .hide-toggle.active .eye-closed {
+      display: inline !important;
+    }
+
+    /* Analyze button */
+    .analyze-btn {
+      flex: 1;
+      padding: 12px 20px;
+      background: #6366f1;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .analyze-btn:hover {
+      background: #5558e3;
+    }
+
+    .analyze-btn:disabled {
+      background: #3d3d5c;
+      cursor: not-allowed;
+    }
+
+    /* States */
+    .state {
+      display: none;
+    }
+
+    .state.active {
+      display: block;
+    }
+
+    /* Initial state */
+    .initial-hint {
+      text-align: center;
+      padding: 30px 20px;
+      color: #555;
+      font-size: 13px;
+    }
+
+    .initial-hint .globe-icon {
+      margin-bottom: 12px;
+      stroke: #555;
+    }
+
+    /* Loading state */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 20px;
+      color: #888;
+    }
+
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid #3d3d5c;
+      border-top-color: #6366f1;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 12px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Error state */
+    .error {
+      padding: 12px;
+      background: #3d2020;
+      border-radius: 8px;
+      color: #ff8080;
+      font-size: 13px;
+    }
+
+    /* Result - Hidden mode */
+    .result-hidden .prediction,
+    .result-hidden .region,
+    .result-hidden .clues,
+    .result-hidden .alternatives,
+    .result-hidden .tip,
+    .result-hidden .section-title {
+      filter: blur(8px);
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .hidden-overlay {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      color: #888;
+      font-size: 13px;
+    }
+
+    .hidden-overlay svg {
+      stroke: #666;
+      margin-bottom: 8px;
+    }
+
+    .hidden-overlay .hint {
+      font-size: 11px;
+      color: #555;
+      margin-top: 4px;
+    }
+
+    .result-hidden .hidden-overlay {
+      display: block;
+    }
+
+    /* Result */
+    .prediction {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .country {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .confidence {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .confidence.high {
+      background: #1a4d2e;
+      color: #4ade80;
+    }
+
+    .confidence.medium {
+      background: #4d3d1a;
+      color: #fbbf24;
+    }
+
+    .confidence.low {
+      background: #4d1a1a;
+      color: #f87171;
+    }
+
+    .region {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 12px;
+    }
+
+    /* Clues */
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      margin-top: 14px;
+    }
+
+    .section-title:first-of-type {
+      margin-top: 0;
+    }
+
+    .clues {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .clue {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .clue-type {
+      background: #3d3d5c;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #a0a0c0;
+      flex-shrink: 0;
+    }
+
+    .clue-desc {
+      font-size: 12px;
+      color: #b0b0b0;
+      line-height: 1.4;
+    }
+
+    /* Alternatives */
+    .alternatives {
+      font-size: 12px;
+      color: #888;
+      padding: 10px;
+      background: #252541;
+      border-radius: 6px;
+    }
+
+    /* Tip */
+    .tip {
+      font-size: 12px;
+      color: #a0a0a0;
+      padding: 10px;
+      background: #1f1f35;
+      border-radius: 6px;
+      border-left: 3px solid #6366f1;
+      line-height: 1.5;
+    }
+
+    /* Status - only show when there's an issue */
+    .status {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      background: #3d2020;
+      border-radius: 6px;
+      margin-top: 16px;
+      font-size: 12px;
+      color: #ff8080;
+    }
+
+    .status.error {
+      display: flex;
+    }
+
+    .status .settings-link {
+      margin-left: auto;
+      color: #6366f1;
+      text-decoration: none;
+      font-size: 11px;
+    }
+
+    .status .settings-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Chat */
+    .chat-section {
+      display: none;
+      margin-top: 16px;
+      border-top: 1px solid #2d2d44;
+      padding-top: 16px;
+    }
+
+    .chat-section.active {
+      display: block;
+    }
+
+    .chat-messages {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 12px;
+    }
+
+    .chat-message {
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .chat-message.user {
+      background: #3d3d5c;
+      color: #e0e0e0;
+      margin-left: 20px;
+    }
+
+    .chat-message.assistant {
+      background: #252541;
+      color: #b0b0b0;
+      margin-right: 20px;
+    }
+
+    .chat-message ul {
+      margin: 4px 0;
+      padding-left: 16px;
+    }
+
+    .chat-message li {
+      margin: 2px 0;
+    }
+
+    .chat-message strong {
+      color: #e0e0e0;
+    }
+
+    .chat-message.assistant.loading {
+      color: #666;
+      font-style: italic;
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 10px 12px;
+      background: #252541;
+      border: 1px solid #3d3d5c;
+      border-radius: 8px;
+      color: #e0e0e0;
+      font-size: 13px;
+      font-family: inherit;
+      resize: none;
+    }
+
+    .chat-input:focus {
+      outline: none;
+      border-color: #6366f1;
+    }
+
+    .chat-input::placeholder {
+      color: #555;
+    }
+
+    .chat-send-btn {
+      padding: 10px 16px;
+      background: #6366f1;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .chat-send-btn:hover {
+      background: #5558e3;
+    }
+
+    .chat-send-btn:disabled {
+      background: #3d3d5c;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-left">
+      <div class="title">GeoGuessr AI Coach</div>
+    </div>
+    <div class="header-right">
+      <button class="settings-btn" id="settingsBtn" title="Settings">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="controls">
+      <button class="analyze-btn" id="analyzeBtn">Review Map</button>
+      <button class="hide-toggle" id="hideToggle" title="Hide answer">
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle class="eye-open" cx="12" cy="12" r="3"></circle>
+          <path class="eye-closed" style="display:none" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+          <line class="eye-closed" style="display:none" x1="1" y1="1" x2="23" y2="23"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Initial State -->
+    <div class="state active" id="initialState">
+      <div class="initial-hint">
+        <svg class="globe-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="2" y1="12" x2="22" y2="12"></line>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+        <p>Analyze the current GeoGuessr view</p>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="state" id="loadingState">
+      <div class="loading">
+        <div class="spinner"></div>
+        <span>Analyzing...</span>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="state" id="errorState">
+      <div class="error" id="errorMessage"></div>
+    </div>
+
+    <!-- Result State -->
+    <div class="state" id="resultState">
+      <div class="hidden-overlay">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+        </svg>
+        <p>Answer hidden</p>
+        <p class="hint">Click the eye button to reveal</p>
+      </div>
+
+      <div class="prediction">
+        <span class="country" id="countryName"></span>
+        <span class="confidence" id="confidence"></span>
+      </div>
+      <div class="region" id="region"></div>
+
+      <div class="section-title">Key Clues</div>
+      <div class="clues" id="clues"></div>
+
+      <div class="section-title">Alternatives</div>
+      <div class="alternatives" id="alternatives"></div>
+
+      <div class="section-title">Remember</div>
+      <div class="tip" id="tip"></div>
+
+      <!-- Chat Section -->
+      <div class="chat-section" id="chatSection">
+        <div class="section-title">Follow-up Questions</div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-row">
+          <input type="text" class="chat-input" id="chatInput" placeholder="Ask a follow-up question...">
+          <button class="chat-send-btn" id="chatSendBtn">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="status" id="statusBar">
+      <span id="statusText">API key not configured</span>
+      <a href="#" id="statusSettingsLink" class="settings-link">Settings</a>
+    </div>
+  </div>
+
+  <script src="dist/sidepanel.js"></script>
+</body>
+</html>

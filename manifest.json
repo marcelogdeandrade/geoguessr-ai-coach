@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "GeoGuessr AI Coach",
+  "version": "1.0.0",
+  "description": "AI-powered hints and analysis for GeoGuessr practice",
+  "permissions": [
+    "activeTab",
+    "sidePanel",
+    "tabs",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
+  "action": {
+    "default_title": "GeoGuessr AI Coach"
+  },
+  "icons": {}
+}
