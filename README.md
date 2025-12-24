@@ -49,6 +49,8 @@ Per GeoGuessr's Community Rules, the following is considered cheating:
 
 #### Option B: Build from Source
 
+Requires [Bun](https://bun.sh) to be installed. See the [official installation guide](https://bun.com/docs/installation).
+
 ```bash
 # Clone the repo
 git clone https://github.com/marcelogdeandrade/geoguessr-ai-coach.git
