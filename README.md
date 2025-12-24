@@ -41,9 +41,17 @@ Per GeoGuessr's Community Rules, the following is considered cheating:
 
 ### 2. Install the Extension
 
+#### Option A: Download a Release (Recommended)
+
+1. Go to the [Releases page](https://github.com/marcelogdeandrade/geoguessr-ai-coach/releases)
+2. Download the latest `geoguessr-ai-coach-vX.X.X.zip`
+3. Extract the zip file to a folder
+
+#### Option B: Build from Source
+
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/geoguessr-ai-coach.git
+git clone https://github.com/marcelogdeandrade/geoguessr-ai-coach.git
 cd geoguessr-ai-coach
 
 # Install dependencies
